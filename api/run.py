@@ -254,7 +254,7 @@ def user_orderid():
 @auth.login_required
 def get_order():
     orderid = request.args.get("orderid")
-    sql = "select t1.id,t1.sid,t1.orderprice,t2.name,t1.receiver,t1.phone,t1.address,date_format(t1.create_time, '%Y-%c-%d %h:%i:%s') as create_time,t1.status from stock_order t1,stock t2 where t1.sid = t2.id and t1.id = {0} limit 20".format(orderid)
+    sql = "select t1.id,t1.sid,t1.orderprice,t2.name,t1.receiver,t1.phone,t1.address,date_format(t1.create_time, '%Y-%c-%d %H:%i:%s') as create_time,t1.status from stock_order t1,stock t2 where t1.sid = t2.id and t1.id = {0} limit 20".format(orderid)
     print(sql)
     dbservice = DBService()
     try:
