@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>商品列表</title>
+    <script src="../static/jquery/jquery.min.js"></script>
+    <!--<script src="../static/jquery/jquery.form.js"></script>-->
+</head>
+<style type="text/css">
+#result{
+	margin:0 auto;
+	overflow:auto;
+	font-family: verdana,arial,sans-serif;
+	font-size:14px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+#result th{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+	width:150px;
+	height:36px;
+}
+#result td{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	height:36px;
+}
+</style>
+<script>
+    $(function () {
+        var username = getCookie('username');
+        if(username != null && username != 'undefined'){
+            $("#username").html(username);
+            $("#username").show();
+            $("#login").hide();
+        }
+        var ia = getCookie('ia');
+        if(ia != null && ia != 'undefined' && ia == '1'){
+            $("#addProduct").show()
+        }
+        else{
+            $("#addProduct").hide()
+        }
+        get_product()
+    });
+
+    function get_product() {
+        var token = getCookie('token')
+        $.ajax({
+            type: "get",
+            // headers:{"Authorization": "Bearer " + token, "Access-Control-Allow-Origin":"*"},
+            url: "http://localhost:5000/get_product",
+            success: function (data) {
+                if(data.code == 5){
+                    var tableHtml = "<table id='result'>";
+					tableHtml += '<thead><tr><th>id</th><th>书本名称</th><th>价格/元</th><th>库存</th><th>编辑</th></tr></thead>';
+					for(var i = 0;i<data.data.length;i++){
+                        var d = data.data[i];
+                        var res = "<tr><td>" + d[0] + "</td>";
+                        res += "<td><a href='/get_product_detail/" + d[0] + "'>" + d[1] + "</a></td>";
+
+                        // res += "<td><a href='http://localhost:5000/get_product?productid=" + d[0] + "'>" + d[1] + "</a></td>";
+                        res += "<td>" + d[2] + "</td>";
+                        res += "<td>" + d[3] + "</td>";
+                        res += "<td><input type='button' id='addOrder' value='下单' onclick='add_order("+d[0]+")'/></td>";
+                        res += "</tr>";
+                        tableHtml += res;
+                    }
+
+                    tableHtml += "</table>";
+                    $("<div id='queryR' style='text-align:center'></div>").html(tableHtml).appendTo('#products');
+                }
+                else{
+                    alert(data.msg);
+                }
+            },
+            error: function(xhr){
+                console.log(xhr);
+                alert(xhr.responseText);
+             }
+        });
+    }
+
+    function add_order(product_id) {
+        var username = getCookie('username');
+        if(username == null || username == '' || username == 'undefined'){
+            window.location.href="/login";
+        }
+        else{
+            window.location.href="/to_add_order?productid="+product_id;
+        }
+    }
+
+    function getCookie(name) {
+        //可以搜索RegExp和match进行学习
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return unescape(arr[2]);
+        } else {
+            return null;
+        }
+    }
+</script>
+<body>
+<div id="head" align="right">
+    <div>welcome！<label id="username"></label>
+    <a href="/to_add_product" id="addProduct" hidden>添加商品</a>
+    <a href="/login" id="login">登录</a>
+    <a href="/my_order" id="my_order">我的订单</a></div>
+</div>
+<div align="center">
+    <h3>商品列表</h3>
+    <div id="products" align="center"></div>
+</div>
+</body>
+</html>

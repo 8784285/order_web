@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>第三方支付页面</title>
+    <script src="../static/jquery/jquery.min.js"></script>
+</head>
+<style type="text/css">
+#result{
+	margin:0 auto;
+	overflow:auto;
+	font-family: verdana,arial,sans-serif;
+	font-size:14px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+#result th{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+	width:150px;
+	height:36px;
+}
+#result td{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	height:36px;
+}
+</style>
+<script>
+$(function () {
+});
+
+function getCookie(name) {
+        //可以搜索RegExp和match进行学习
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return unescape(arr[2]);
+        } else {
+            return null;
+        }
+    }
+
+</script>
+<body>
+
+<div align="center">
+    <form action="/pay_end" method="post">
+        <h3>第三方支付页面</h3>
+        <br>
+        <span>订单号:</span>
+        <input type="text" name="order_id" value="{{order_id}}" style="background-color:#cccccc;" readonly>
+        <br>
+        <span>支付金额：</span>
+        <input type="text" name="pay_price" value="{{pay_price}}" style="background-color:#cccccc;"  readonly/>
+        <br><br>
+        <input type="submit" id="pay" value="支付完成"/>
+        <br><br>
+        <a href="javascript:history.go(-1)">返回上一页</a>
+    </form>
+</div>
+</body>
+</html>

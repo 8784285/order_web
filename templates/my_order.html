@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单系统</title>
+    <script src="../static/jquery/jquery.min.js"></script>
+    <!--<script src="../static/jquery/jquery.form.js"></script>-->
+</head>
+<style type="text/css">
+#result{
+	margin:0 auto;
+	overflow:auto;
+	font-family: verdana,arial,sans-serif;
+	font-size:14px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+#result th{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+	width:150px;
+	height:36px;
+}
+#result td{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	height:36px;
+}
+</style>
+<script>
+    $(function () {
+        get_my_order()
+    });
+
+    function get_my_order() {
+        var token = getCookie('token')
+        $.ajax({
+            type: "get",
+            headers:{"Authorization": "Bearer " + token},
+            url: "http://localhost:5000/user_orderid",
+            success: function (data) {
+                if(data.code == 5){
+                    var tableHtml = "<table id='result'>";
+					tableHtml += '<thead><tr><th>订单号</th><th>操作</th></tr></thead>';
+					for(var i = 0;i<data.orderid.length;i++){
+                        var orderid = data.orderid[i];
+                        var res = "<tr><td>" + orderid + "</td>";
+                        res += "<td><a href='/my_order_detail/" + orderid + "'>查看</a></td>";
+                        res += "</tr>";
+                        tableHtml += res;
+                    }
+                    tableHtml += "</table>";
+                    $("<div id='queryR' style='text-align:center'></div>").html(tableHtml).appendTo('#orders');
+                }
+                else{
+                    $("<div id='queryR' style='text-align:center'></div>").html('暂无订单号！').appendTo('#orders');
+                }
+            },
+            error: function(xhr){
+                var err = xhr.responseText;
+                var err_json = JSON.parse(err);
+                if('code' in err_json && err_json['code'] == 401){
+                    alert(err_json['message'] + " 请登录后再操作！");
+                     window.location.href="/login";
+                }
+
+             }
+        });
+    }
+
+    function add_order(order_id) {
+        alert(order_id)
+    }
+
+    function getCookie(name) {
+        //可以搜索RegExp和match进行学习
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return unescape(arr[2]);
+        } else {
+            return null;
+        }
+    }
+</script>
+<body>
+<div align="center">
+    <div align="right"><a href="/index">商品列表</a></div>
+    <h3>我的订单号列表</h3>
+    <div id="orders" align="center"></div>
+    <br>
+    <a href="javascript:history.go(-1)">返回上一页</a>
+</div>
+</body>
+</html>

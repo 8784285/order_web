@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <script src="../static/jquery/jquery.min.js"></script>
+    <!--<script src="../static/jquery/jquery.form.js"></script>-->
+</head>
+<style type="text/css">
+#result{
+	margin:0 auto;
+	overflow:auto;
+	font-family: verdana,arial,sans-serif;
+	font-size:14px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+#result th{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+	width:150px;
+	height:36px;
+}
+#result td{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	height:36px;
+}
+</style>
+<script>
+    $(function () {
+        get_my_order()
+    });
+
+    function get_my_order() {
+        var token = getCookie('token')
+        $.ajax({
+            type: "get",
+            headers:{"Authorization": "Bearer " + token},
+            url: "http://localhost:5000/get_order?orderid=" + '{{orderid}}',
+            success: function (data) {
+                if(data.code == 5){
+                    var tableHtml = "<table id='result'>";
+                    tableHtml += "<tr><td>书本名称：</td><td>"+data.data['name']+"</td></tr>"
+                    tableHtml += "<tr><td>商品id：</td><td>"+data.data['stock_id']+"</td></tr>"
+                    tableHtml += "<tr><td>订单号：</td><td>"+data.data['order_id']+"</td></tr>"
+                    tableHtml += "<tr><td>订单价格：</td><td>"+data.data['orderprice']+"元</td></tr>"
+                    tableHtml += "<tr><td>订单创建时间：</td><td>"+data.data['create_time']+"</td></tr>"
+                    tableHtml += "<tr><td>收件人：</td><td>"+data.data['receiver']+"</td></tr>"
+                    tableHtml += "<tr><td>收件人手机号：</td><td>"+data.data['phone']+"</td></tr>"
+                    tableHtml += "<tr><td>收件地址：</td><td>"+data.data['address']+"</td></tr>"
+                    if(data.data['status'] == 0){
+                        tableHtml += "<tr><td>订单状态：</td><td><span style='color:red'>下单，未支付</span></td></tr>"
+                    }
+                    else if(data.data['status'] == 1){
+                        tableHtml += "<tr><td>订单状态：</td><td><span style='color:green'>已完成支付</span></td></tr>"
+                    }
+                    tableHtml += "</table>";
+
+                    $("<div id='queryR' style='text-align:center'></div>").html(tableHtml).appendTo('#order');
+                }
+                else{
+                    $("<div id='queryR' style='text-align:center'></div>").html('暂无订单信息！').appendTo('#order');
+                }
+            },
+            error: function(xhr){
+                alert(xhr);
+             }
+        });
+    }
+
+    function getCookie(name) {
+        //可以搜索RegExp和match进行学习
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return unescape(arr[2]);
+        } else {
+            return null;
+        }
+    }
+</script>
+<body>
+<div align="center">
+    <h3>订单详情</h3>
+    <div id="order" align="center"></div>
+    <br>
+    <a href="javascript:history.go(-1)">返回上一页</a>
+</div>
+</body>
+</html>

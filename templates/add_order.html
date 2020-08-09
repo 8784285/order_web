@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>下单页面</title>
+    <script src="../static/jquery/jquery.min.js"></script>
+</head>
+<style type="text/css">
+#result{
+	margin:0 auto;
+	overflow:auto;
+	font-family: verdana,arial,sans-serif;
+	font-size:14px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #666666;
+	border-collapse: collapse;
+}
+#result th{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #dedede;
+	width:150px;
+	height:36px;
+}
+#result td{
+	text-align:center;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #666666;
+	background-color: #ffffff;
+	height:36px;
+}
+</style>
+<script>
+$(function () {
+    $.ajax({
+        type: "get",
+        url: "http://localhost:5000/get_product_detail/" + '{{productid}}',
+        success: function (data) {
+            if(data.code == 5){
+                var tableHtml = "<table id='result'>";
+                tableHtml += "<tr><td>书本名称：</td><td><input type='text' id='sid'  name='sid' value='"+data.data['id']+"' hidden/><input type='text' id='name'  name='name' value='"+data.data['name']+"' style=\"background-color:#cccccc;\" readonly/></td></tr>"
+                tableHtml += "<tr><td>书本价钱：</td><td><input type='text' id='price' name='price' value='"+data.data['price']+"' style=\"background-color:#cccccc;\" readonly/></td></tr>"
+                tableHtml += "<tr><td>库存量：</td><td><input type='text' id='count' name='count' value='"+data.data['count']+"' style=\"background-color:#cccccc;\" readonly/></td></tr>"
+                tableHtml += "<tr><td>购买数量：</td><td><input type='text' id='buy_count' name='buy_count' value='1'/></td></tr>";
+                tableHtml += "</table>";
+                $("<div id='queryR' style='text-align:center'></div>").html(tableHtml).appendTo('#product');
+            }
+            else{
+                $("#product").html("该id不存在！");
+            }
+        },
+        error: function(xhr){
+            alert("error");
+         }
+    });
+
+    var token = getCookie('token');
+    var headers = {"Authorization": "Bearer " + token}
+    console.log(headers['Authorization'])
+    $.ajax({
+        type: "get",
+        headers:{"Authorization": "Bearer " + token},
+        url: "http://localhost:5000/get_address",
+        success: function (data) {
+            if(data.code == 5){
+                var tableHtml = "<table id='result'>";
+                var username = getCookie("username");
+                tableHtml += "<tr><td>接收人：</td><td><input type='text' id='receiver' name='receiver' value='"+username+"'/></td></tr>"
+                tableHtml += "<tr><td>手机号：</td><td><input type='text' id='phone' name='phone' value='"+data.data['phone']+"'/></td></tr>"
+                tableHtml += "<tr><td>收货地址：</td><td><input type='text' id='address' name='address' value='"+data.data['address']+"'/></td></tr>"
+                tableHtml += "</table>";
+                $("<div id='queryR' style='text-align:center'></div>").html(tableHtml).appendTo('#address');
+            }
+            else{
+                $("#address").html("该用户无收货地址！");
+            }
+        },
+        error: function(xhr){
+            alert("error");
+         }
+    });
+});
+
+function getCookie(name) {
+        //可以搜索RegExp和match进行学习
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return unescape(arr[2]);
+        } else {
+            return null;
+        }
+    }
+
+</script>
+<body>
+
+<div align="center">
+    <form action="/pay" method="post">
+        <h3>订单系统商品id={{productid}}详情</h3>
+        <div id="product" align="center"></div>
+        <br>
+        <h3>我的收货地址：</h3>
+        <div id="address" align="center"></div>
+        <br>
+        <input type="submit" id="pay" value="支付"/>
+        <br><br>
+        <a href="javascript:history.go(-1)">返回上一页</a>
+    </form>
+</div>
+</body>
+</html>

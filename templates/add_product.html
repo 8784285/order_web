@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>增加商品</title>
+    <script src="../static/jquery/jquery.min.js"></script>
+</head>
+<script>
+function add_product() {
+
+    var name = $("#name").val();
+    var price = $("#price").val();
+    var count = $("#count").val();
+    var token = getCookie('token');
+    $.ajax({
+        type: "post",
+        dataType: 'json',
+        headers:{"Authorization": "Bearer " + token},
+        data:{'name':name, 'price':price, 'count':count},
+        url: "http://localhost:5000/add_product",
+        success: function (data) {
+            if(data.code == 2001){
+                alert("商品添加成功！")
+            }
+            else{
+                alert("商品添加失败！")
+            }
+        },
+        error: function(xhr){
+            alert("异常：" + xhr.responseText);
+         }
+    });
+}    
+function do_pay() {
+    var r=confirm("Press a button");
+    if (r==true)
+    {
+        alert("pay success");
+    }
+    else
+    {
+        alert("pay cancel")
+    }
+}
+function getCookie(name) {
+        //可以搜索RegExp和match进行学习
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg)) {
+            return unescape(arr[2]);
+        } else {
+            return null;
+        }
+    }
+</script>
+<body>
+
+<div align="center">
+    <h3>添加商品</h3>
+    <!--<form action="/add_product" method="post">-->
+        <span>商品名称：</span>
+        <input type="text" name="name" id="name" required/>
+        <br>
+        <span>商品价格：</span>
+        <input type="text" name="price" id="price" required/>元
+        <br>
+        库存：
+        <input type="text" name="count" id="count" required/>
+        <br><br>
+        <input type="button" name="addProduct" value="添加" onclick="add_product()">
+        <br><br>
+
+        <a href="javascript:history.go(-1)">返回上一页</a>
+    <!--</form>-->
+</div>
+</body>
+</html>
