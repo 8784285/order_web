@@ -4,8 +4,7 @@
 - 一分钱支付漏洞
 - 超卖性能问题
 
-**对应专栏文章见：牛客网**
- 专栏地址：https://www.nowcoder.com/tutorial/10032/index
+专栏地址：https://www.nowcoder.com/tutorial/10032/index
 
 ## 系统服务启动方式
 ### 1、接口部分，端口：5000
