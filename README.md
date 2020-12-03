@@ -4,7 +4,7 @@
 - 一分钱支付漏洞
 - 超卖性能问题
 
-专栏地址：https://www.nowcoder.com/tutorial/10032/index
+对应专栏【接口测试之代码实例21讲】地址：https://www.nowcoder.com/tutorial/10032/index
 
 ## 系统服务启动方式
 ### 1、接口部分，端口：5000
