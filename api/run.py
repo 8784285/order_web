@@ -93,7 +93,7 @@ def register():
         dbservice.exec_and_commit(sql)
         uid = dbservice.get_cursor().lastrowid
         print('uid:',uid)
-        sql = "insert into userinfo(IDCard,Phone,Address,uid) values('%s','%s','%s',%s)" % (data['idCard'], data['phone'], data['address'], uid)
+        sql = "insert into userinfo(IDCard,Phone,Address,id) values('%s','%s','%s',%s)" % (data['idCard'], data['phone'], data['address'], uid)
         print(sql)
         dbservice.exec_and_commit(sql)
         return jsonify(code=4, msg="注册成功")
